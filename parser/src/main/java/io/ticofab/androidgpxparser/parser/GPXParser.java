@@ -2,13 +2,14 @@ package io.ticofab.androidgpxparser.parser;
 
 import android.util.Xml;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -489,9 +490,10 @@ public class GPXParser {
         return ele;
     }
 
-    private DateTime readTime(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private LocalDateTime readTime(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, TAG_TIME);
-        DateTime time = ISODateTimeFormat.dateTimeParser().parseDateTime(readText(parser));
+        LocalDateTime time = LocalDateTime.parse(readText(parser),
+                DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
         parser.require(XmlPullParser.END_TAG, ns, TAG_TIME);
         return time;
     }
